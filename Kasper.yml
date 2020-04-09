@@ -13,7 +13,7 @@ detaileddescription: |-
 configuration:
 - display: Server URL (e.g. https://example.net)
   name: url
-  defaultvalue: https://52.163.52.159:13299
+  defaultvalue: https://1.2.3.4:13299
   type: 0
   required: true
 - display: Username
