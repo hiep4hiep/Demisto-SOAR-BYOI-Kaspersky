@@ -98,9 +98,31 @@ class Client():
                 results += json.loads(response.text)['pChunk']['KLCSP_ITERATOR_ARRAY']
                 start += step
             hosts = results
-            for host in hosts:
-                print("Host name: " + host['value']['KLHST_WKS_WINHOSTNAME'] + " OS is: " + host['value']['KLHST_WKS_OS_NAME'])
 
+            if hosts != []:
+                for host in hosts:
+                    #print("Host name: " + host['value']['KLHST_WKS_WINHOSTNAME'] + " OS is: " + host['value']['KLHST_WKS_OS_NAME'])
+                    #Client.Hostname = str(host['value']['KLHST_WKS_WINHOSTNAME'])
+                    #Client.OS = str(host['value']['KLHST_WKS_WINHOSTNAME'])
+                    context = {'Kasper.Host(val.Hostname && val.Hostname == obj.Hostname)': host['value']['KLHST_WKS_WINHOSTNAME'],
+                               'Kasper.Host(val.OS && val.OS == obj.OS)': host['value']['KLHST_WKS_OS_NAME']}
+                demisto.results({
+                    'Type': entryTypes['note'],
+                    'ContentsFormat': formats['json'],
+                    'Contents': context,
+                    'HumanReadable': "Host name: " + host['value']['KLHST_WKS_WINHOSTNAME'] + " OS is: " + host['value']['KLHST_WKS_OS_NAME'],
+                    'EntryContext': context
+                })
+            else:
+                context = {'Kasper.Host(val.Hostname && val.Hostname == obj.Hostname)': 'null',
+                               'Kasper.Host(val.OS && val.OS == obj.OS)': 'null'}
+                demisto.results({
+                    'Type': entryTypes['note'],
+                    'ContentsFormat': formats['json'],
+                    'Contents': context,
+                    'HumanReadable': "Sorry, I found no host with requested IP address",
+                    'EntryContext': context
+                })
 
 
 ## Demisto command
@@ -113,7 +135,7 @@ def test_module(client):
 
 
 def find_ip_command(client,ip):
-    print('Searching host information for requested IP address..')
+    #print('Searching host information for requested IP address..')
     client.find_host(client,ip)
 
 
